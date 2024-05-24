@@ -72,6 +72,8 @@ export function forEachDeclarationEmitWithErrorsScenario(
     action: (
         scenarioName: (scenario: string) => string,
         fs: () => FileSystem,
+        outFile: boolean,
+        incremental: true | undefined,
     ) => void,
     withComposite: boolean,
 ) {
@@ -87,6 +89,8 @@ export function forEachDeclarationEmitWithErrorsScenario(
                                 { declaration: true },
                             incremental,
                         ),
+                outFile,
+                incremental,
             );
         }
     }

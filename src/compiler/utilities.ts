@@ -5858,6 +5858,7 @@ export function createDiagnosticCollection(): DiagnosticCollection {
         lookup,
         getGlobalDiagnostics,
         getDiagnostics,
+        hasDiagnostics: () => !!fileDiagnostics.size || !!nonFileDiagnostics.length,
     };
 
     function lookup(diagnostic: Diagnostic): Diagnostic | undefined {

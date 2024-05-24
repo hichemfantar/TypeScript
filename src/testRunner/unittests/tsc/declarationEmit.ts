@@ -356,7 +356,7 @@ ${pluginOneAction()}`,
         commandLineArgs: ["-p", "D:\\Work\\pkg1", "--explainFiles"],
     });
 
-    forEachDeclarationEmitWithErrorsScenario((scenarioName, fs) => {
+    forEachDeclarationEmitWithErrorsScenario((scenarioName, fs, outFile, incremental) => {
         verifyTsc({
             scenario: "declarationEmit",
             subScenario: scenarioName("reports dts generation errors"),
@@ -367,6 +367,10 @@ ${pluginOneAction()}`,
                 {
                     ...noChangeRun,
                     commandLineArgs: ["-b", `/src/project`, "--explainFiles", "--listEmittedFiles", "-v"],
+                    discrepancyExplanation: outFile && incremental ? () => [ // TODO: sheetal why is this not without --outFile
+                        "Clean tsbuildinfo will have pendingEmit as after dts diagnostics files are not emitted",
+                        "Incremental tsbuildinfo through tsc --p will emit files but will have emitDiagnostics and no pendingEmit value since emit isnt pending",
+                    ] : undefined,
                 },
             ],
         });

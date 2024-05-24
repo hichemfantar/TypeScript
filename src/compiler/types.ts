@@ -4873,7 +4873,7 @@ export interface Program extends ScriptReferenceHost {
     /** @internal */ getRedirectReferenceForResolutionFromSourceOfProject(filePath: Path): ResolvedProjectReference | undefined;
     /** @internal */ isSourceOfProjectReferenceRedirect(fileName: string): boolean;
     /** @internal */ getCompilerOptionsForFile(file: SourceFile): CompilerOptions;
-    /** @internal */ getBuildInfo?(): BuildInfo;
+    /** @internal */ getBuildInfo?(emitterDiagnostics: DiagnosticCollection): BuildInfo;
     /** @internal */ emitBuildInfo(writeFile?: WriteFileCallback, cancellationToken?: CancellationToken): EmitResult;
     /**
      * This implementation handles file exists to be true if file is source of project reference redirect when program is created using useSourceOfProjectReferenceRedirect
@@ -8424,7 +8424,7 @@ export interface EmitHost extends ScriptReferenceHost, ModuleSpecifierResolution
     getEmitModuleFormatOfFile(sourceFile: SourceFile): ModuleKind;
 
     writeFile: WriteFileCallback;
-    getBuildInfo(): BuildInfo | undefined;
+    getBuildInfo(emitterDiagnostics: DiagnosticCollection): BuildInfo | undefined;
     getSourceFileFromReference: Program["getSourceFileFromReference"];
     readonly redirectTargetsMap: RedirectTargetsMap;
     createHash?(data: string): string;
@@ -9879,6 +9879,8 @@ export interface DiagnosticCollection {
     // Otherwise, returns all the diagnostics (global and file associated) in this collection.
     getDiagnostics(): Diagnostic[];
     getDiagnostics(fileName: string): DiagnosticWithLocation[];
+
+    hasDiagnostics(): boolean;
 }
 
 // SyntaxKind.SyntaxList

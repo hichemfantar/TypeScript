@@ -455,7 +455,8 @@ export function forEachEmittedFile<T>(
     if (options.outFile) {
         if (sourceFiles.length) {
             const bundle = factory.createBundle(sourceFiles);
-            const result = action(getOutputPathsFor(bundle, host, forceDtsEmit), bundle);
+            const outputPaths = getOutputPathsFor(bundle, host, forceDtsEmit);
+            const result = action(!onlyBuildInfo ? outputPaths : { buildInfoPath: outputPaths.buildInfoPath }, bundle);
             if (result) {
                 return result;
             }
@@ -774,12 +775,12 @@ export function emitFiles(resolver: EmitResolver, host: EmitHost, targetSourceFi
 
     function emitBuildInfo(buildInfoPath: string | undefined) {
         // Write build information if applicable
-        if (!buildInfoPath || targetSourceFile || emitSkipped) return;
+        if (!buildInfoPath || targetSourceFile) return;
         if (host.isEmitBlocked(buildInfoPath)) {
             emitSkipped = true;
             return;
         }
-        const buildInfo = host.getBuildInfo() || createBuildInfo(/*program*/ undefined);
+        const buildInfo = host.getBuildInfo(emitterDiagnostics) || createBuildInfo(/*program*/ undefined);
         // Pass buildinfo as additional data to avoid having to reparse
         writeFile(host, emitterDiagnostics, buildInfoPath, getBuildInfoText(buildInfo), /*writeByteOrderMark*/ false, /*sourceFiles*/ undefined, { buildInfo });
         emittedFilesList?.push(buildInfoPath);

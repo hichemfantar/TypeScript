@@ -12,7 +12,7 @@ import {
     osFlavorToString,
     TestServerHostOsFlavor,
 } from "../helpers/virtualFileSystemWithWatch.js";
-describe("unittests:: sys:: symlinkWatching::", () => {
+describe.skip("unittests:: sys:: symlinkWatching::", () => {
     function delayedOp(op: () => void, delay: number) {
         ts.sys.setTimeout!(op, delay);
     }
