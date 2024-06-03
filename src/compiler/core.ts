@@ -1560,6 +1560,11 @@ export function clone<T>(object: T): T {
  */
 export function extend<T1, T2>(first: T1, second: T2): T1 & T2 {
     const result: T1 & T2 = {} as any;
+
+    function isObject(value: any) {
+        return value !== undefined && (typeof value === "object" || Array.isArray(value));
+    }
+    
     for (const id in second) {
         if (hasOwnProperty.call(second, id)) {
             (result as any)[id] = (second as any)[id];
@@ -1568,12 +1573,18 @@ export function extend<T1, T2>(first: T1, second: T2): T1 & T2 {
 
     for (const id in first) {
         if (hasOwnProperty.call(first, id)) {
-            (result as any)[id] = (first as any)[id];
+            if (hasOwnProperty.call(result, id) && isObject((result as any)[id]) && isObject((first as any)[id])) {
+                (result as any)[id] = extend((result as any)[id], (first as any)[id]);
+            }
+            else {
+                (result as any)[id] = (first as any)[id];
+            }
         }
     }
 
     return result;
 }
+
 
 /** @internal */
 export function copyProperties<T1 extends T2, T2>(first: T1, second: T2) {
